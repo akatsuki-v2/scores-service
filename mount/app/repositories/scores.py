@@ -16,7 +16,7 @@ class ScoresRepo:
     def __init__(self, ctx: Context) -> None:
         self.ctx = ctx
 
-    async def create(self, beatmap_id: int, account_id: int, mode: str,
+    async def submit(self, beatmap_id: int, account_id: int, mode: str,
                      mods: int, score: int, performance: float, accuracy: float,
                      max_combo: int, count_50s: int, count_100s: int,
                      count_300s: int, count_gekis: int, count_katus: int,

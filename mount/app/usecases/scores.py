@@ -17,7 +17,7 @@ async def submit(ctx: Context, beatmap_id: int, account_id: int, mode: str,
                  ) -> Mapping[str, Any] | ServiceError:
     repo = ScoresRepo(ctx)
 
-    _score = await repo.create(beatmap_id=beatmap_id,
+    _score = await repo.submit(beatmap_id=beatmap_id,
                                account_id=account_id,
                                mode=mode,
                                mods=mods,
