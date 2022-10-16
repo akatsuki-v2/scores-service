@@ -7,7 +7,7 @@ from app.common.context import Context
 
 class ScoresRepo:
     READ_PARAMS = """\
-        score_id, beatmap_id, account_id, mode, mods, score, performance,
+        score_id, beatmap_md5, account_id, mode, mods, score, performance,
         accuracy, max_combo, count_50s, count_100s, count_300s, count_gekis,
         count_katus, count_misses, grade, passed, perfect, seconds_elapsed,
         anticheat_flags, client_checksum, status, created_at, updated_at
@@ -16,7 +16,7 @@ class ScoresRepo:
     def __init__(self, ctx: Context) -> None:
         self.ctx = ctx
 
-    async def submit(self, beatmap_id: int, account_id: int, mode: str,
+    async def submit(self, beatmap_md5: str, account_id: int, mode: str,
                      mods: int, score: int, performance: float, accuracy: float,
                      max_combo: int, count_50s: int, count_100s: int,
                      count_300s: int, count_gekis: int, count_katus: int,
@@ -26,12 +26,12 @@ class ScoresRepo:
                      ) -> Mapping[str, Any] | None:
         query = """\
             INSERT INTO scores (
-                beatmap_id, account_id, mode, mods, score, performance,
+                beatmap_md5, account_id, mode, mods, score, performance,
                 accuracy, max_combo, count_50s, count_100s, count_300s,
                 count_gekis, count_katus, count_misses, grade, passed, perfect,
                 seconds_elapsed, anticheat_flags, client_checksum, status
             ) VALUES (
-                :beatmap_id, :account_id, :mode, :mods, :score, :performance,
+                :beatmap_md5, :account_id, :mode, :mods, :score, :performance,
                 :accuracy, :max_combo, :count_50s, :count_100s, :count_300s,
                 :count_gekis, :count_katus, :count_misses, :grade, :passed,
                 :perfect, :seconds_elapsed, :anticheat_flags, :client_checksum,
@@ -39,7 +39,7 @@ class ScoresRepo:
             )
         """
         params = {
-            "beatmap_id": beatmap_id,
+            "beatmap_md5": beatmap_md5,
             "account_id": account_id,
             "mode": mode,
             "mods": mods,
@@ -82,7 +82,7 @@ class ScoresRepo:
         score = await self.ctx.db.fetch_one(query, params)
         return score
 
-    async def fetch_many(self, beatmap_id: int | None = None,
+    async def fetch_many(self, beatmap_md5: str | None = None,
                          mode: str | None = None,
                          mods: int | None = None,
                          passed: bool | None = None,
@@ -94,7 +94,7 @@ class ScoresRepo:
         query = f"""\
             SELECT {self.READ_PARAMS}
               FROM scores
-             WHERE beatmap_id = COALESCE(:beatmap_id, beatmap_id)
+             WHERE beatmap_md5 = COALESCE(:beatmap_md5, beatmap_md5)
                AND mode = COALESCE(:mode, mode)
                AND mods = COALESCE(:mods, mods)
                AND passed = COALESCE(:passed, passed)
@@ -104,7 +104,7 @@ class ScoresRepo:
             OFFSET :offset
         """
         params = {
-            "beatmap_id": beatmap_id,
+            "beatmap_md5": beatmap_md5,
             "mode": mode,
             "mods": mods,
             "passed": passed,

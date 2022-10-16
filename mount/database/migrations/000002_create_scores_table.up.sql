@@ -1,6 +1,6 @@
 CREATE TABLE scores (
     score_id INT NOT NULL PRIMARY KEY,
-    beatmap_id INT NOT NULL,
+    beatmap_md5 CHAR(32) NOT NULL,
     account_id INT NOT NULL,
     mode VARCHAR(16) NOT NULL,
     mods INT NOT NULL,

@@ -17,7 +17,7 @@ router = APIRouter()
 
 @router.post("/v1/scores", response_model=Success[Score])
 async def submit(args: ScoreInput, ctx: RequestContext = Depends()):
-    data = await scores.submit(ctx, beatmap_id=args.beatmap_id,
+    data = await scores.submit(ctx, beatmap_md5=args.beatmap_md5,
                                account_id=args.account_id, mode=args.mode,
                                mods=args.mods, score=args.score,
                                performance=0.0, accuracy=args.accuracy,
@@ -51,7 +51,7 @@ async def fetch_one(score_id: int, ctx: RequestContext = Depends()):
 
 
 @router.get("/v1/scores", response_model=Success[list[Score]])
-async def fetch_many(beatmap_id: int | None = None,
+async def fetch_many(beatmap_md5: str | None = None,
                      mode: Literal['osu', 'taiko',
                                    'fruits', 'mania'] | None = None,
                      mods: int | None = None,
@@ -61,7 +61,7 @@ async def fetch_many(beatmap_id: int | None = None,
                      page: int = 1,
                      page_size: int = settings.DEFAULT_PAGE_SIZE,
                      ctx: RequestContext = Depends()):
-    data = await scores.fetch_many(ctx, beatmap_id=beatmap_id,
+    data = await scores.fetch_many(ctx, beatmap_md5=beatmap_md5,
                                    mode=mode, mods=mods, passed=passed,
                                    perfect=perfect, status=status,
                                    page=page, page_size=page_size)

@@ -6,7 +6,7 @@ from app.models import Status
 
 
 class ScoreInput(BaseModel):
-    beatmap_id: int
+    beatmap_md5: str
     account_id: int
     mode: Literal['osu', 'taiko', 'fruits', 'mania']
     mods: int
@@ -30,7 +30,7 @@ class ScoreInput(BaseModel):
 
 class Score(BaseModel):
     score_id: int
-    beatmap_id: int
+    beatmap_md5: str
     account_id: int
     mode: Literal['osu', 'taiko', 'fruits', 'mania']
     mods: int
