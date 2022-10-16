@@ -53,6 +53,7 @@ async def fetch_one(score_id: int, ctx: RequestContext = Depends()):
 
 @router.get("/v1/scores", response_model=Success[list[Score]])
 async def fetch_many(beatmap_md5: str | None = None,
+                     account_id: int | None = None,
                      mode: Literal['osu', 'taiko',
                                    'fruits', 'mania'] | None = None,
                      mods: int | None = None,
@@ -63,6 +64,7 @@ async def fetch_many(beatmap_md5: str | None = None,
                      page_size: int = settings.DEFAULT_PAGE_SIZE,
                      ctx: RequestContext = Depends()):
     data = await scores.fetch_many(ctx, beatmap_md5=beatmap_md5,
+                                   account_id=account_id,
                                    mode=mode, mods=mods, passed=passed,
                                    perfect=perfect, status=status,
                                    page=page, page_size=page_size)

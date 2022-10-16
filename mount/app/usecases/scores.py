@@ -57,6 +57,7 @@ async def fetch_one(ctx: Context, score_id: int) -> Mapping[str, Any] | ServiceE
 
 
 async def fetch_many(ctx: Context, beatmap_md5: str | None = None,
+                     account_id: int | None = None,
                      mode: str | None = None,
                      mods: int | None = None,
                      passed: bool | None = None,
@@ -68,6 +69,7 @@ async def fetch_many(ctx: Context, beatmap_md5: str | None = None,
     repo = ScoresRepo(ctx)
 
     scores = await repo.fetch_many(beatmap_md5=beatmap_md5,
+                                   account_id=account_id,
                                    mode=mode,
                                    mods=mods,
                                    passed=passed,

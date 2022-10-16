@@ -86,6 +86,7 @@ class ScoresRepo:
         return score
 
     async def fetch_many(self, beatmap_md5: str | None = None,
+                         account_id: int | None = None,
                          mode: str | None = None,
                          mods: int | None = None,
                          passed: bool | None = None,
@@ -98,6 +99,7 @@ class ScoresRepo:
             SELECT {self.READ_PARAMS}
               FROM scores
              WHERE beatmap_md5 = COALESCE(:beatmap_md5, beatmap_md5)
+               AND account_id = COALESCE(:account_id, account_id)
                AND mode = COALESCE(:mode, mode)
                AND mods = COALESCE(:mods, mods)
                AND passed = COALESCE(:passed, passed)
@@ -108,6 +110,7 @@ class ScoresRepo:
         """
         params = {
             "beatmap_md5": beatmap_md5,
+            "account_id": account_id,
             "mode": mode,
             "mods": mods,
             "passed": passed,
