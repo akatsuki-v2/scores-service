@@ -1,3 +1,5 @@
+from typing import Literal
+
 from app.api.rest.context import RequestContext
 from app.common import responses
 from app.common import settings
@@ -50,7 +52,8 @@ async def fetch_one(score_id: int, ctx: RequestContext = Depends()):
 
 @router.get("/v1/scores", response_model=Success[list[Score]])
 async def fetch_many(beatmap_id: int | None = None,
-                     mode: str | None = None,
+                     mode: Literal['osu', 'taiko',
+                                   'fruits', 'mania'] | None = None,
                      mods: int | None = None,
                      passed: bool | None = None,
                      perfect: bool | None = None,
