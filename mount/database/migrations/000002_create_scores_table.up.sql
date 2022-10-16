@@ -1,0 +1,26 @@
+CREATE TABLE scores (
+    score_id INT NOT NULL PRIMARY KEY,
+    beatmap_id INT NOT NULL,
+    account_id INT NOT NULL,
+    mode VARCHAR(16) NOT NULL,
+    mods INT NOT NULL,
+    score INT NOT NULL,
+    performance FLOAT NOT NULL,
+    accuracy FLOAT NOT NULL,
+    max_combo INT NOT NULL,
+    count_50s INT NOT NULL,
+    count_100s INT NOT NULL,
+    count_300s INT NOT NULL,
+    count_gekis INT NOT NULL,
+    count_katus INT NOT NULL,
+    count_misses INT NOT NULL,
+    grade VARCHAR(2) NOT NULL,
+    passed BOOLEAN NOT NULL,
+    perfect BOOLEAN NOT NULL,
+    seconds_elapsed INT NOT NULL,
+    anticheat_flags INT NOT NULL,
+    client_checksum CHAR(32) NOT NULL, -- TODO: is this good naming?
+    status VARCHAR(16) NOT NULL,
+    created_at DATETIME NOT NULL DEFAULT NOW(),
+    updated_at DATETIME NOT NULL DEFAULT NOW()
+);
