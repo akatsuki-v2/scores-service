@@ -73,8 +73,7 @@ async def fetch_many(ctx: Context, beatmap_id: int | None = None,
                                    perfect=perfect,
                                    status=status,
                                    page=page,
-                                   page_size=page_size,
-                                   )
+                                   page_size=page_size)
 
     return scores
 
