@@ -7,40 +7,43 @@ from app.common.context import Context
 
 class ScoresRepo:
     READ_PARAMS = """\
-        score_id, beatmap_md5, account_id, mode, mods, score, performance,
-        accuracy, max_combo, count_50s, count_100s, count_300s, count_gekis,
-        count_katus, count_misses, grade, passed, perfect, seconds_elapsed,
-        anticheat_flags, client_checksum, status, created_at, updated_at
+        score_id, beatmap_md5, account_id, username, mode, mods, score,
+        performance, accuracy, max_combo, count_50s, count_100s, count_300s,
+        count_gekis, count_katus, count_misses, grade, passed, perfect,
+        seconds_elapsed, anticheat_flags, client_checksum, status, created_at,
+        updated_at
     """
 
     def __init__(self, ctx: Context) -> None:
         self.ctx = ctx
 
-    async def submit(self, beatmap_md5: str, account_id: int, mode: str,
-                     mods: int, score: int, performance: float, accuracy: float,
-                     max_combo: int, count_50s: int, count_100s: int,
-                     count_300s: int, count_gekis: int, count_katus: int,
-                     count_misses: int, grade: str, passed: bool, perfect: bool,
-                     seconds_elapsed: int, anticheat_flags: int,
-                     client_checksum: str, status: str,
+    async def submit(self, beatmap_md5: str, account_id: int, username: str,
+                     mode: str, mods: int, score: int, performance: float,
+                     accuracy: float, max_combo: int, count_50s: int,
+                     count_100s: int, count_300s: int, count_gekis: int,
+                     count_katus: int, count_misses: int, grade: str,
+                     passed: bool, perfect: bool, seconds_elapsed: int,
+                     anticheat_flags: int, client_checksum: str, status: str,
                      ) -> Mapping[str, Any] | None:
         query = """\
             INSERT INTO scores (
-                beatmap_md5, account_id, mode, mods, score, performance,
-                accuracy, max_combo, count_50s, count_100s, count_300s,
-                count_gekis, count_katus, count_misses, grade, passed, perfect,
-                seconds_elapsed, anticheat_flags, client_checksum, status
+                beatmap_md5, account_id, username, mode, mods, score,
+                performance, accuracy, max_combo, count_50s, count_100s,
+                count_300s, count_gekis, count_katus, count_misses, grade,
+                passed, perfect, seconds_elapsed, anticheat_flags,
+                client_checksum, status
             ) VALUES (
-                :beatmap_md5, :account_id, :mode, :mods, :score, :performance,
-                :accuracy, :max_combo, :count_50s, :count_100s, :count_300s,
-                :count_gekis, :count_katus, :count_misses, :grade, :passed,
-                :perfect, :seconds_elapsed, :anticheat_flags, :client_checksum,
-                :status
+                :beatmap_md5, :account_id, :username, :mode, :mods, :score,
+                :performance, :accuracy, :max_combo, :count_50s, :count_100s,
+                :count_300s, :count_gekis, :count_katus, :count_misses, :grade,
+                :passed, :perfect, :seconds_elapsed, :anticheat_flags,
+                :client_checksum, :status
             )
         """
         params = {
             "beatmap_md5": beatmap_md5,
             "account_id": account_id,
+            "username": username,
             "mode": mode,
             "mods": mods,
             "score": score,

@@ -18,7 +18,8 @@ router = APIRouter()
 @router.post("/v1/scores", response_model=Success[Score])
 async def submit(args: ScoreInput, ctx: RequestContext = Depends()):
     data = await scores.submit(ctx, beatmap_md5=args.beatmap_md5,
-                               account_id=args.account_id, mode=args.mode,
+                               account_id=args.account_id,
+                               username=args.username, mode=args.mode,
                                mods=args.mods, score=args.score,
                                performance=0.0, accuracy=args.accuracy,
                                max_combo=args.max_combo, count_50s=args.count_50s,

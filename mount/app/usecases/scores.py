@@ -7,18 +7,19 @@ from app.common.errors import ServiceError
 from app.repositories.scores import ScoresRepo
 
 
-async def submit(ctx: Context, beatmap_md5: str, account_id: int, mode: str,
-                 mods: int, score: int, performance: float, accuracy: float,
-                 max_combo: int, count_50s: int, count_100s: int,
-                 count_300s: int, count_gekis: int, count_katus: int,
-                 count_misses: int, grade: str, passed: bool, perfect: bool,
-                 seconds_elapsed: int, anticheat_flags: int,
+async def submit(ctx: Context, beatmap_md5: str, account_id: int, username: str,
+                 mode: str, mods: int, score: int, performance: float,
+                 accuracy: float, max_combo: int, count_50s: int,
+                 count_100s: int, count_300s: int, count_gekis: int,
+                 count_katus: int, count_misses: int, grade: str, passed: bool,
+                 perfect: bool, seconds_elapsed: int, anticheat_flags: int,
                  client_checksum: str, status: str
                  ) -> Mapping[str, Any] | ServiceError:
     repo = ScoresRepo(ctx)
 
     _score = await repo.submit(beatmap_md5=beatmap_md5,
                                account_id=account_id,
+                               username=username,
                                mode=mode,
                                mods=mods,
                                score=score,
