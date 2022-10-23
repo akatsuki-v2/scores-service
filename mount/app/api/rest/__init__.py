@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import time
 
-from app.common import logging
 from app.common import settings
 from app.services import database
 from app.services import redis
 from fastapi import FastAPI
 from fastapi import Request
+from shared_modules import logger
 
 
 def init_db(api: FastAPI) -> None:
     @api.on_event("startup")
     async def startup_db() -> None:
-        logging.info("Starting up database pool")
+        logger.info("Starting up database pool")
         service_database = database.ServiceDatabase(
             read_dsn=database.dsn(
                 driver=settings.WRITE_DB_DRIVER,
@@ -37,34 +37,34 @@ def init_db(api: FastAPI) -> None:
         )
         await service_database.connect()
         api.state.db = service_database
-        logging.info("Database pool started up")
+        logger.info("Database pool started up")
 
     @api.on_event("shutdown")
     async def shutdown_db() -> None:
-        logging.info("Shutting down database pool")
+        logger.info("Shutting down database pool")
         await api.state.db.disconnect()
         del api.state.db
-        logging.info("Database pool shut down")
+        logger.info("Database pool shut down")
 
 
 def init_redis(api: FastAPI) -> None:
     @api.on_event("startup")
     async def startup_redis() -> None:
-        logging.info("Starting up redis pool")
+        logger.info("Starting up redis pool")
         service_redis = redis.ServiceRedis(
             host=settings.REDIS_HOST,
             port=settings.REDIS_PORT,
         )
         await service_redis.initialize()
         api.state.redis = service_redis
-        logging.info("Redis pool started up")
+        logger.info("Redis pool started up")
 
     @api.on_event("shutdown")
     async def shutdown_redis() -> None:
-        logging.info("Shutting down the redis")
+        logger.info("Shutting down the redis")
         await api.state.redis.close()
         del api.state.redis
-        logging.info("Redis pool shut down")
+        logger.info("Redis pool shut down")
 
 
 def init_middlewares(api: FastAPI) -> None:
