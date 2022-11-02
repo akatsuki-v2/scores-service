@@ -5,6 +5,7 @@ from app.common import settings
 from app.common.context import Context
 from app.common.errors import ServiceError
 from app.repositories.scores import ScoresRepo
+from shared_modules.api.rest.v1.users import UsersClient
 
 
 async def submit(ctx: Context, beatmap_md5: str, account_id: int, username: str,
@@ -56,6 +57,22 @@ async def fetch_one(ctx: Context, score_id: int) -> Mapping[str, Any] | ServiceE
     return score
 
 
+async def filter_by_country(ctx: Context, scores: list[Mapping[str, Any]], country: str) -> list[Mapping[str, Any]]:
+    client = UsersClient(ctx.http_client)
+
+    filtered_scores: list[Mapping[str, Any]] = []
+
+    for score in scores:
+        account = await client.get_account(score["account_id"])
+        if account is None:
+            continue
+
+        if account.country == country:
+            filtered_scores.append(score)
+
+    return filtered_scores
+
+
 async def fetch_many(ctx: Context, beatmap_md5: str | None = None,
                      account_id: int | None = None,
                      mode: str | None = None,
@@ -63,6 +80,7 @@ async def fetch_many(ctx: Context, beatmap_md5: str | None = None,
                      passed: bool | None = None,
                      perfect: bool | None = None,
                      status: str | None = None,
+                     country: str | None = None,
                      page: int = 1,
                      page_size: int = settings.DEFAULT_PAGE_SIZE,
                      ) -> list[Mapping[str, Any]] | ServiceError:
@@ -77,6 +95,9 @@ async def fetch_many(ctx: Context, beatmap_md5: str | None = None,
                                    status=status,
                                    page=page,
                                    page_size=page_size)
+
+    if country is not None:
+        scores = await filter_by_country(ctx, scores, country)
 
     return scores
 

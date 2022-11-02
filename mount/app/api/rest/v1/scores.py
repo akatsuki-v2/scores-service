@@ -60,13 +60,15 @@ async def fetch_many(beatmap_md5: str | None = None,
                      passed: bool | None = None,
                      perfect: bool | None = None,
                      status: str | None = None,
+                     country: str | None = None,
                      page: int = 1,
                      page_size: int = settings.DEFAULT_PAGE_SIZE,
                      ctx: RequestContext = Depends()):
     data = await scores.fetch_many(ctx, beatmap_md5=beatmap_md5,
                                    account_id=account_id,
-                                   mode=mode, mods=mods, passed=passed,
-                                   perfect=perfect, status=status,
+                                   mode=mode, mods=mods,
+                                   passed=passed, perfect=perfect,
+                                   status=status, country=country,
                                    page=page, page_size=page_size)
     if isinstance(data, ServiceError):
         return responses.failure(data, "Failed to fetch scores")
