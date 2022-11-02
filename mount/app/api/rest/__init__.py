@@ -7,6 +7,7 @@ from app.services import database
 from app.services import redis
 from fastapi import FastAPI
 from fastapi import Request
+from shared_modules import http_client
 from shared_modules import logger
 
 
@@ -67,6 +68,21 @@ def init_redis(api: FastAPI) -> None:
         logger.info("Redis pool shut down")
 
 
+def init_http_client(api: FastAPI) -> None:
+    @api.on_event("startup")
+    async def startup_http_client() -> None:
+        logger.info("Starting up HTTP client")
+        api.state.http_client = http_client.ServiceHTTPClient()
+        logger.info("HTTP client started up")
+
+    @api.on_event("shutdown")
+    async def shutdown_http_client() -> None:
+        logger.info("Shutting down HTTP client")
+        await api.state.http_client.aclose()
+        del api.state.http_client
+        logger.info("HTTP client shut down")
+
+
 def init_middlewares(api: FastAPI) -> None:
     # NOTE: these run bottom to top
 
@@ -80,6 +96,12 @@ def init_middlewares(api: FastAPI) -> None:
     @api.middleware("http")
     async def add_redis_to_request(request: Request, call_next):
         request.state.redis = request.app.state.redis
+        response = await call_next(request)
+        return response
+
+    @api.middleware("http")
+    async def add_http_client_to_request(request: Request, call_next):
+        request.state.http_client = request.app.state.http_client
         response = await call_next(request)
         return response
 
@@ -103,6 +125,7 @@ def init_api():
 
     init_db(api)
     init_redis(api)
+    init_http_client(api)
     init_middlewares(api)
     init_routes(api)
 

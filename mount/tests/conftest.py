@@ -6,6 +6,7 @@ from app.common.context import Context
 from app.services.database import dsn
 from app.services.database import ServiceDatabase
 from app.services.redis import ServiceRedis
+from shared_modules.http_client import ServiceHTTPClient
 
 
 # https://docs.pytest.org/en/7.1.x/reference/reference.html#globalvar-pytestmark
@@ -13,9 +14,10 @@ pytestmark = pytest.mark.asyncio
 
 
 class TestContext(Context):
-    def __init__(self, db: ServiceDatabase, redis: ServiceRedis) -> None:
+    def __init__(self, db: ServiceDatabase, redis: ServiceRedis, http_client: ServiceHTTPClient) -> None:
         self._db = db
         self._redis = redis
+        self._http_client = http_client
 
     @property
     def db(self) -> ServiceDatabase:
@@ -24,6 +26,10 @@ class TestContext(Context):
     @property
     def redis(self) -> ServiceRedis:
         return self._redis
+
+    @property
+    def http_client(self) -> ServiceHTTPClient:
+        return self._http_client
 
 
 @pytest.fixture
@@ -62,5 +68,11 @@ async def redis() -> AsyncIterator[ServiceRedis]:
 
 
 @pytest.fixture
-async def ctx(db: ServiceDatabase, redis: ServiceRedis) -> TestContext:
-    return TestContext(db=db, redis=redis)
+async def http_client() -> AsyncIterator[ServiceHTTPClient]:
+    async with ServiceHTTPClient() as http_client:
+        yield http_client
+
+
+@pytest.fixture
+async def ctx(db: ServiceDatabase, redis: ServiceRedis, http_client: ServiceHTTPClient) -> TestContext:
+    return TestContext(db=db, redis=redis, http_client=http_client)
